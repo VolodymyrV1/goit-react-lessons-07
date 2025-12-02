@@ -1,91 +1,96 @@
-import axios from 'axios';
-import { useState, useEffect } from 'react';
+//Приклад 1
 
-import Timer from './Timer';
-import Sidebar from './Sidebar';
+// import { useQuery } from "@tanstack/react-query";
+// import { useState } from "react";
 
-import type { Character } from '../types/character';
+// import { fetchPerson } from "../services/swapiService";
+
+// function App() {
+//   const [counter, setCounter] = useState<number>(0);
+
+//   const { data, isLoading, isError } = useQuery({
+//     queryKey: ['character', counter],
+//     queryFn: () => fetchPerson(counter),
+//     enabled: counter > 0,
+//     staleTime: 60 * 1000, // 1 minute
+//   });  
+
+
+
+
+//   return (
+//     <>
+//       <h1>Lesson 7 React Query</h1>
+
+//       <button onClick={() => setCounter(prevCounter => prevCounter - 1)}>
+//         -
+//       </button>
+//       <span>{counter}</span>
+//       <button onClick={() => setCounter(prevCounter => prevCounter + 1)}>
+//         +
+//       </button>
+
+//       {isLoading && <p>Loading ...</p>}
+//       {isError && <p>Oops. Something went wrong</p>}
+//       <h1>{data?.name }</h1>
+//       <pre>{JSON.stringify(data, null, 2)}</pre>
+//     </>
+//   );
+// }
+
+
+
+//Приклад 2
+
+import SearchForm from "./SearchForm/SearchForm";
+import ArticleList from "./ArticleList/ArticleList";
+
+import { useQuery } from "@tanstack/react-query";
+
+
+
 
 function App() {
-  const [character, setCharacter] = useState<Character | null>(null);
-  const [counter, setCounter] = useState<number>(() => {
-    const value = localStorage.getItem("counter");
 
-    if (value != null) {
-      return JSON.parse(value);
-    }
+  useQuery({
+    queryKey: ["articles"],
+    queryFn: 
 
-    return 0;
-  });
+  })
 
-  const [isTimerVisible, setIsTimerVisible] = useState<boolean>(false);
-
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false)
-
-  // useEffect(() => {
-  //   console.log('useEffect');
-
-  //   const fetchCharacter = async () => {
-  //     const { data } = await axios.get<Character>(
-  //       'https://swapi.info/api/people/1'
-  //     );
-
-  //     setCharacter(data);
-  //   };
-
-  //   fetchCharacter();
-  // }, []);
-
-  useEffect(() => {
-    console.log("useEffect", { counter });
+  const handleSearch = (topic: string) => {
+    console.log({topic});
     
-    localStorage.setItem("counter", JSON.stringify(counter));
-
-    return () => {
-      console.log("After");
-      
-    }
-  }, [counter]);
-
-  // useEffect(() => {
-  //   console.log("useEffect", {character});
-  // }, [character]);
-
-  // useEffect(() => {
-  //   console.log('useEffect', { counter, character });
-  // }, [counter, character]);
-
-  const handleClick = () => {
-    setCounter(prevCounter => prevCounter + 1);
-  };
-
-  const toggleTimerVisible = () => {
-    setIsTimerVisible(prevIsTimerVisible => !prevIsTimerVisible)
   }
 
-  const openSidebar = () => {
-    setIsSidebarOpen(true);
-  }
 
-  const closeSidebar = () => {
-    setIsSidebarOpen(false)
-  }
+
+
+
+
+
 
   return (
     <>
-      <h1>Lesson 6</h1>
-
-      <pre>{JSON.stringify(character, null, 2)}</pre>
-
-      <button onClick={handleClick}>Clicks: {counter}</button>
-      <button onClick={toggleTimerVisible}>Toggle timer</button>
-      <button onClick={openSidebar}>Open Sidebar</button>
-
-      {isTimerVisible && <Timer />}
-      {isSidebarOpen && <Sidebar onClose={closeSidebar}/>}
-
+      <SearchForm onSearch={handleSearch} />
+      <ArticleList items={[]}/>
     </>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export default App;
