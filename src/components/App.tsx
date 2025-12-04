@@ -13,10 +13,7 @@
 //     queryFn: () => fetchPerson(counter),
 //     enabled: counter > 0,
 //     staleTime: 60 * 1000, // 1 minute
-//   });  
-
-
-
+//   });
 
 //   return (
 //     <>
@@ -38,59 +35,52 @@
 //   );
 // }
 
-
-
 //Приклад 2
 
-import SearchForm from "./SearchForm/SearchForm";
-import ArticleList from "./ArticleList/ArticleList";
+import SearchForm from './SearchForm/SearchForm';
+import ArticleList from './ArticleList/ArticleList';
 
-import { useQuery } from "@tanstack/react-query";
+import { fetchArticles } from '../services/articleService';
 
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 
-
+import ReactPaginate from 'react-paginate';
 
 function App() {
+  const [topic, setTopic] = useState('');
 
-  useQuery({
-    queryKey: ["articles"],
-    queryFn: 
-
-  })
+  const { data, isLoading, isSuccess, isError } = useQuery({
+    queryKey: ['articles', topic],
+    queryFn: () => fetchArticles(topic),
+    enabled: topic != '',
+  });
 
   const handleSearch = (topic: string) => {
-    console.log({topic});
-    
-  }
-
-
-
-
-
-
-
+    setTopic(topic);
+  };
 
   return (
     <>
       <SearchForm onSearch={handleSearch} />
-      <ArticleList items={[]}/>
+      {isLoading && <p>Loading ... </p>}
+      {isError && <p>Oops! Something went wrong :(</p>}
+      {isSuccess && (
+        <>
+          <ArticleList items={data?.hits} />
+          <ReactPaginate
+            breakLabel="..."
+            nextLabel="next >"
+            // onPageChange={handlePageClick}
+            pageRangeDisplayed={5}
+            pageCount={data?.nbPages}
+            previousLabel="< previous"
+            renderOnZeroPageCount={null}
+          />
+        </>
+      )}
     </>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 export default App;
