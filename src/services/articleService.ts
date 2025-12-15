@@ -8,12 +8,13 @@ interface ArticlesHttpResponse {
   nbPages: number;
 }
 
-export const fetchArticles = async (topic: string): Promise<ArticlesHttpResponse> => {
+export const fetchArticles = async (topic: string, page: number): Promise<ArticlesHttpResponse> => {
   const response = await axios.get<ArticlesHttpResponse>(
     'https://hn.algolia.com/api/v1/search',
     {
       params: {
-        query: topic,
+            query: topic,
+            page,
 
       },
     }

@@ -39,26 +39,34 @@
 
 import SearchForm from './SearchForm/SearchForm';
 import ArticleList from './ArticleList/ArticleList';
+import css from './App.module.css';
 
 import { fetchArticles } from '../services/articleService';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { useState } from 'react';
 
 import ReactPaginate from 'react-paginate';
 
 function App() {
   const [topic, setTopic] = useState('');
+  const [page, setPage] = useState(1);
 
   const { data, isLoading, isSuccess, isError } = useQuery({
-    queryKey: ['articles', topic],
-    queryFn: () => fetchArticles(topic),
+    queryKey: ['articles', topic, page],
+    queryFn: () => fetchArticles(topic, page),
     enabled: topic != '',
+    placeholderData: keepPreviousData,
   });
 
   const handleSearch = (topic: string) => {
     setTopic(topic);
+    setPage(1);
   };
+
+  const handlePageClick = ({ selected }: {selected: number}) => {
+    setPage(selected + 1)    
+  }
 
   return (
     <>
@@ -70,11 +78,14 @@ function App() {
           <ArticleList items={data?.hits} />
           <ReactPaginate
             breakLabel="..."
-            nextLabel="next >"
-            // onPageChange={handlePageClick}
+            nextLabel=">"
+            onPageChange={handlePageClick}
+            containerClassName={css.pagination}
+            activeClassName={css.active}
             pageRangeDisplayed={5}
             pageCount={data?.nbPages}
-            previousLabel="< previous"
+            forcePage={page - 1}
+            previousLabel="<"
             renderOnZeroPageCount={null}
           />
         </>
